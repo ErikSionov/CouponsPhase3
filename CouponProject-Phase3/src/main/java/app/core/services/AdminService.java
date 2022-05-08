@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import app.core.ClientType;
 import app.core.entities.Company;
 import app.core.entities.Coupon;
 import app.core.entities.Customer;
@@ -250,5 +251,15 @@ public class AdminService extends ClientService {
 		}else {
 			return null;
 		}
+	}
+	
+	@Override
+	public ClientType getClientType() {
+		return ClientType.ADMINISTRATOR;
+	}
+
+	@Override
+	public int getClientId() {
+		return 0;
 	}
 }

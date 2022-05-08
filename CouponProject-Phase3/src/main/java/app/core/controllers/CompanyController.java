@@ -21,7 +21,6 @@ public class CompanyController {
 	
 	@GetMapping
 	public Company getCompanyInfo() {
-		
 		return companyService.getCompanyDetails();
 	}
 	

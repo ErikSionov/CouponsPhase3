@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @Component
 public class ClientDetails {
 	
-	private ClientType clientType;
 	private int id;
 	private String email;
+	private ClientType clientType;
 	
 }

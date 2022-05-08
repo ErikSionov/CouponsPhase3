@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import app.core.ClientType;
 import app.core.entities.Category;
 import app.core.entities.Company;
 import app.core.entities.Coupon;
@@ -137,6 +138,16 @@ public class CompanyService extends ClientService {
 	public Coupon getCouponByTitle(String title) {
 		Coupon coupon = couponRepository.getByTitle(title);
 		return coupon;
+	}
+
+	@Override
+	public ClientType getClientType() {
+		return ClientType.COMPANY;
+	}
+
+	@Override
+	public int getClientId() {
+		return companyId;
 	}
 
 }

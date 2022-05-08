@@ -38,61 +38,31 @@ public class LoginManager {
 
 		try {
 			
-			// TODO check implementation of clientType in login selection
-			ClientType clientType;
+			// TODO ELDAR check implementation of clientType in login selection
+//			ClientType clientType;
 			
 			AdminService adminService = ctx.getBean(AdminService.class);
 			if (adminService.login(email, password)) {
-				clientType = ClientType.ADMINISTRATOR;
+//				clientType = ClientType.ADMINISTRATOR;
 				return adminService;
 			}
 			adminService = null;
 			
 			CompanyService companyService = ctx.getBean(CompanyService.class);
 			if (companyService.login(email, password)) {
-				clientType = ClientType.COMPANY;
+//				clientType = ClientType.COMPANY;
 				return companyService;
 			}
 			companyService = null;
+			
 			CustomerService customerService = ctx.getBean(CustomerService.class);
 			if (customerService.login(email, password)) {
-				clientType = ClientType.CUSTOMER;
+//				clientType = ClientType.CUSTOMER;
 				return customerService;
 			}
 			customerService = null;
 			return null;
 			
-			// TODO remove this if clientType implementation above is successful
-//			switch (clientType) {
-//				case ADMINISTRATOR :
-//					AdminService adminF = ctx.getBean(AdminService.class);
-//					if (adminF.login(email, password)) {
-//						return adminF;
-//					} else {
-//						adminF = null;
-//						return null;
-//					}
-//
-//				case COMPANY :
-//					CompanyService compF = ctx.getBean(CompanyService.class);
-//					if (compF.login(email, password)) {
-//						return compF;
-//					}
-//					compF = null;
-//					return null;
-//
-//				case CUSTOMER :
-//					CustomerService custF = ctx.getBean(CustomerService.class);
-//					if (custF.login(email, password)) {
-//						return custF;
-//					}
-//					custF = null;
-//					return null;
-//
-//				default :
-//					System.out.println("login() in loginManager failed, clientType not supported");
-//					return null;
-//			}
 		} catch (CouponSystemException e) {
 			System.out.println("login() in loginManager failed");
 			return null;

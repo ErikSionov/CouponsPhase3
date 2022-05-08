@@ -4,9 +4,12 @@ import java.util.List;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import app.core.filters.LoginFilter;
 import app.core.tasks.DailyRemoveCouponsTask;
 import app.core.utils.ClientDetails;
 import app.core.utils.Jwt;
@@ -34,7 +37,7 @@ public class Application {
 		//===========================================================//
 		
 		Jwt jwtUtil = ctx.getBean(Jwt.class);
-		ClientDetails clientD = new ClientDetails(ClientType.ADMINISTRATOR,2,"aaa");
+		ClientDetails clientD = new ClientDetails(2,"aaa",ClientType.ADMINISTRATOR);
 		String genToken = jwtUtil.generateToken(clientD);
 		System.out.println(genToken);
 		
@@ -46,7 +49,16 @@ public class Application {
 //		ctx.close();
 
 	}
-
+	// TODO ELDAR where is a best place to place beans such as those?
+	@Bean
+	public FilterRegistrationBean<LoginFilter> RegistrationBean(Jwt jwtUtil){
+		FilterRegistrationBean<LoginFilter> regBean = new FilterRegistrationBean<>();
+		regBean.setFilter(new LoginFilter(jwtUtil));
+		regBean.addUrlPatterns("/api/*");
+		regBean.setOrder(1);
+		return regBean;
+	}
+	
 	
 	/**Utility method to format out-print of List objects.
 	 * @param list

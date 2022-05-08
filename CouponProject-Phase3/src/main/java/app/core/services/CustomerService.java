@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import app.core.ClientType;
 import app.core.entities.Category;
 import app.core.entities.Coupon;
 import app.core.entities.Customer;
@@ -121,5 +122,15 @@ public class CustomerService extends ClientService {
 		} catch (Exception e) {
 			throw new CustomerServiceException("removeCoupon() ERROR: couldn't find customer with id: " + customerId);
 		}
+	}
+
+	@Override
+	public ClientType getClientType() {
+		return ClientType.CUSTOMER;
+	}
+
+	@Override
+	public int getClientId() {
+		return customerId;
 	}
 }
