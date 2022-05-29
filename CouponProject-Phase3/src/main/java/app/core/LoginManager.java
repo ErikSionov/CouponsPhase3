@@ -38,26 +38,21 @@ public class LoginManager {
 
 		try {
 			
-			// TODO ELDAR check implementation of clientType in login selection
-//			ClientType clientType;
 			
 			AdminService adminService = ctx.getBean(AdminService.class);
 			if (adminService.login(email, password)) {
-//				clientType = ClientType.ADMINISTRATOR;
 				return adminService;
 			}
 			adminService = null;
 			
 			CompanyService companyService = ctx.getBean(CompanyService.class);
 			if (companyService.login(email, password)) {
-//				clientType = ClientType.COMPANY;
 				return companyService;
 			}
 			companyService = null;
 			
 			CustomerService customerService = ctx.getBean(CustomerService.class);
 			if (customerService.login(email, password)) {
-//				clientType = ClientType.CUSTOMER;
 				return customerService;
 			}
 			customerService = null;

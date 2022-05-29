@@ -15,6 +15,8 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
 	Customer findByEmailAndPassword(String email, String password);
 	
+	List<Customer> findAllByFirstNameContainingOrEmailContainingOrLastNameContaining(String firstName, String lastName, String email);
+	
 	boolean existsByIdAndCoupons(int customerId, Coupon coupon);
 	
 	 @Query("SELECT c FROM Customer c JOIN FETCH c.coupons WHERE c.id = (:id)")

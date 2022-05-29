@@ -1,20 +1,21 @@
 package app.core.controllers;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver;
 
-import app.core.ClientType;
 import app.core.LoginManager;
-import app.core.services.AdminService;
 import app.core.services.ClientService;
 import app.core.utils.ClientDetails;
 import app.core.utils.Jwt;
 
 @RestController
+@RequestMapping("/login")
 public class LoginController {
 	
 	private LoginManager loginManager;
@@ -26,9 +27,10 @@ public class LoginController {
 		this.loginManager = loginManager;
 	}
 	
-	// TODO ELDAR ask how to send the email/password not through path variable
-	@PutMapping("/login/{email}/{password}")
-	public String login(@PathVariable String email, @PathVariable String password) {
+	// TODO ELDAR ask why CORS is triggering all the time even when the @crossOrigin annotation is on
+	@CrossOrigin("http://localhost:4200")
+	@PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public String login(@RequestParam String email, @RequestParam String password) {
 		ClientService clientService = loginManager.login(email,password);
 		if(clientService != null) {
 		ClientDetails clientDetails = new ClientDetails(clientService.getClientId(),email,clientService.getClientType());
@@ -37,5 +39,5 @@ public class LoginController {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized user");
 		}
 	}
-	
+
 }

@@ -10,6 +10,8 @@ public interface CompanyRepository extends JpaRepository<Company, Integer>{
 
 	List<Company> findByNameOrEmail(String name, String email);
 	
+	List<Company> findByNameContainingOrEmailContaining(String name, String Email);
+	
 	Company findByEmailAndPassword(String email, String password);
 	
 }

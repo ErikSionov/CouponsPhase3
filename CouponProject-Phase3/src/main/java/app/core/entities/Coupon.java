@@ -38,7 +38,7 @@ public class Coupon implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "company_id")
 	@JsonIgnore
-	//TODO ELDAR: when no jsonIgnore, company information is present!!!
+	//TODO ELDAR: check ways to remove important information from entities
 	private Company company;
 	@Enumerated(EnumType.STRING)
 	private Category category;

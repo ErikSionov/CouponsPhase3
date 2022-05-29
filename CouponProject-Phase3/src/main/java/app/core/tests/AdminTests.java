@@ -6,9 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
-import app.core.ClientType;
 import app.core.LoginManager;
 import app.core.entities.Category;
 import app.core.entities.Company;

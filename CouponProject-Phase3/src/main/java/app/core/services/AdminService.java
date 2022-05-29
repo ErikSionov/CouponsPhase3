@@ -1,6 +1,7 @@
 package app.core.services;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,13 +40,15 @@ public class AdminService extends ClientService {
 		}
 	}
 
-	/**Adds a new company to the DB. the company mustn't have a similar name and email to existing company in the DB.
+	/**
+	 * Adds a new company to the DB. the company mustn't have a similar name and
+	 * email to existing company in the DB.
 	 * 
 	 * @param company company to be added.
 	 * @throws AdminServiceException in case of error.
 	 */
-	public void addCompany(Company company) throws AdminServiceException {
-		if(companyRepository.existsById(company.getId())) {
+	public int addCompany(Company company) throws AdminServiceException {
+		if (companyRepository.existsById(company.getId())) {
 			throw new AdminServiceException("Company with same id is present");
 		}
 		try {
@@ -53,6 +56,7 @@ public class AdminService extends ClientService {
 			if (companies.isEmpty()) {
 				companyRepository.save(company);
 				System.out.println("company added with id: " + company.getId());
+				return company.getId();
 			} else {
 				throw new AdminServiceException("Company with same name or email present in DB.");
 			}
@@ -60,10 +64,9 @@ public class AdminService extends ClientService {
 			throw new AdminServiceException("addCompany ERROR: " + e.getMessage());
 		}
 	}
-	
-	
-	
-	/**Updates already present company in DB, can't update Id or Name of the company
+
+	/**
+	 * Updates already present company in DB, can't update Id or Name of the company
 	 * 
 	 * @param company company entity to that needs updating
 	 * @throws AdminServiceException in case of error.
@@ -88,7 +91,9 @@ public class AdminService extends ClientService {
 		}
 	}
 
-	/**Delete a company by it's companyId, while doing so ALSO will delete all company's coupons and their purchases.
+	/**
+	 * Delete a company by it's companyId, while doing so ALSO will delete all
+	 * company's coupons and their purchases.
 	 * 
 	 * @param companyId Company's id to delete
 	 * @throws AdminServiceException if any error occurs.
@@ -102,7 +107,8 @@ public class AdminService extends ClientService {
 		}
 	}
 
-	/**Retrieves a list of all companies in the DB
+	/**
+	 * Retrieves a list of all companies in the DB
 	 * 
 	 * @return list of Company() objects
 	 */
@@ -110,7 +116,8 @@ public class AdminService extends ClientService {
 		return companyRepository.findAll();
 	}
 
-	/**Retrieves one company by it's Id from DB
+	/**
+	 * Retrieves one company by it's Id from DB
 	 * 
 	 * @param companyId
 	 * @return one Company() object
@@ -125,20 +132,32 @@ public class AdminService extends ClientService {
 		}
 	}
 
-	/**Adds a new customer to the DB, mustn't have the same email as an existing customer
+	public List<Company> getCompanyByNameOrEmail(String nameOrEmail) throws AdminServiceException {
+		List<Company> list = companyRepository.findByNameContainingOrEmailContaining(nameOrEmail, nameOrEmail);
+		if (!list.isEmpty()) {
+			return list;
+		} else {
+			return list;
+		}
+	}
+
+	/**
+	 * Adds a new customer to the DB, mustn't have the same email as an existing
+	 * customer
 	 * 
 	 * @param customer Customer() object to be added to the DB
 	 * @throws AdminServiceException
 	 */
-	public void addCustomer(Customer customer) throws AdminServiceException {
-		if(customerRepository.existsById(customer.getId())) {
+	public int addCustomer(Customer customer) throws AdminServiceException {
+		if (customerRepository.existsById(customer.getId())) {
 			throw new AdminServiceException("customer with same id already exists");
 		}
 		try {
 			List<Customer> list = customerRepository.findByFirstNameOrEmail(null, customer.getEmail());
 			if (list.isEmpty()) {
-				customerRepository.save(customer);
+				Customer cust = customerRepository.save(customer);
 				System.out.println("customer added with id: " + customer.getId());
+				return cust.getId();
 			} else {
 				throw new AdminServiceException("can't add customer with same email.");
 			}
@@ -147,7 +166,8 @@ public class AdminService extends ClientService {
 		}
 	}
 
-	/**Update a customer in DB, can't update it's Id.
+	/**
+	 * Update a customer in DB, can't update it's Id.
 	 * 
 	 * @param customer customer() object to update.
 	 * @throws AdminServiceException
@@ -169,7 +189,9 @@ public class AdminService extends ClientService {
 		}
 	}
 
-	/**Delete a customer from DB using it's customerId, also deletes all coupon purchases by the customer.
+	/**
+	 * Delete a customer from DB using it's customerId, also deletes all coupon
+	 * purchases by the customer.
 	 * 
 	 * @param customerId customer's Id to delete
 	 * @throws AdminServiceException
@@ -183,7 +205,9 @@ public class AdminService extends ClientService {
 		}
 	}
 
-	/**Retrieves one customer() object from DB by its customerId
+	/**
+	 * Retrieves one customer() object WITHOUT! it's coupons from DB by its
+	 * customerId,
 	 * 
 	 * @param customerId
 	 * @return Customer() object from DB without it's coupons list.
@@ -197,8 +221,9 @@ public class AdminService extends ClientService {
 			throw new AdminServiceException("getCustomer ERROR: couldn't find customer with id: " + customerId);
 		}
 	}
-	
-	/**Retrieves one customer() object from DB by its customerId with it's coupons.
+
+	/**
+	 * Retrieves one customer() object from DB by its customerId with it's coupons.
 	 * 
 	 * @param customerId
 	 * @return Customer() object from DB with coupon list.
@@ -212,8 +237,37 @@ public class AdminService extends ClientService {
 			throw new AdminServiceException("getCustomer ERROR: couldn't find customer with id: " + customerId);
 		}
 	}
-	
-	/**Retrieves a list of customer() objects from DB
+
+	/**
+	 * Retrieves customer list based on search string
+	 * 
+	 * @param customerId
+	 * @return Customer() object from DB with coupon list.
+	 * @throws AdminServiceException
+	 */
+	public List<Customer> getCustomerSearch(String search) throws AdminServiceException {
+		List<Customer> customers = new ArrayList<Customer>();
+		try {
+			//TODO ELDAR how to get suggested numbers instead of one, can't seem to get all which contains some form of number
+			int searchId = Integer.parseInt(search);
+			Optional<Customer> opt= customerRepository.findById(searchId);
+			if(!opt.isEmpty()) {
+				customers.add(opt.get());
+			}
+		} catch (NumberFormatException e1) {
+			System.out.println("tried to parse a number but failed");
+		}
+		try {
+			List<Customer> temp = customerRepository.findAllByFirstNameContainingOrEmailContainingOrLastNameContaining(search, search, search);
+			customers.addAll(temp);
+			return customers;
+		} catch (Exception e) {
+			throw new AdminServiceException("AdminService Error: failed to search for: " + search);
+		}
+	}
+
+	/**
+	 * Retrieves a list of customer() objects from DB
 	 * 
 	 * @return list of Customer() objects
 	 */
@@ -229,30 +283,30 @@ public class AdminService extends ClientService {
 		List<Coupon> coupons = couponRepository.findAllByCompany_id(companyId);
 		return coupons;
 	};
-	
-	public List<Coupon> getAllCustomerCoupons(Customer customer){
+
+	public List<Coupon> getAllCustomerCoupons(Customer customer) {
 		List<Coupon> coupons = couponRepository.findAllByCustomers(customer);
 		return coupons;
 	}
-	
+
 	public Customer getCustomerByEmail(String email) {
 		List<Customer> customers = customerRepository.findByFirstNameOrEmail(null, email);
-		if(!customers.isEmpty()) {
+		if (!customers.isEmpty()) {
 			return customers.get(0);
-		}else {
+		} else {
 			return null;
 		}
 	}
-	
+
 	public Company checkIfCompanyExistsByNameOrEmail(String name, String email) {
 		List<Company> companies = companyRepository.findByNameOrEmail(name, email);
-		if(!companies.isEmpty()) {
+		if (!companies.isEmpty()) {
 			return companies.get(0);
-		}else {
+		} else {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public ClientType getClientType() {
 		return ClientType.ADMINISTRATOR;
@@ -261,5 +315,10 @@ public class AdminService extends ClientService {
 	@Override
 	public int getClientId() {
 		return 0;
+	}
+
+	public List<Coupon> getAllCoupons() {
+		List<Coupon> coupons = couponRepository.findAll();
+		return coupons;
 	}
 }

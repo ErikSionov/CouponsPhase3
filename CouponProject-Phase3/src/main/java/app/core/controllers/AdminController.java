@@ -3,6 +3,7 @@ package app.core.controllers;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +22,7 @@ import app.core.exceptions.AdminServiceException;
 import app.core.services.AdminService;
 
 @RestController
+@CrossOrigin("http://localhost:4200")
 @RequestMapping("/api/admin")
 public class AdminController {
 
@@ -41,9 +43,9 @@ public class AdminController {
 	}
 
 	@PostMapping("/company/add")
-	public void addCompany(@RequestBody Company company, @RequestHeader String token) {
+	public int addCompany(@RequestBody Company company, @RequestHeader String token) {
 		try {
-			adminService.addCompany(company);
+			return adminService.addCompany(company);
 		} catch (AdminServiceException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
@@ -52,8 +54,6 @@ public class AdminController {
 	@DeleteMapping("/company/delete/{companyId}")
 	public void deleteCompany(@PathVariable int companyId, @RequestHeader String token) {
 		try {
-			// TODO ELDAR request body of whole Company object for safety and then take companyId
-			// from it
 			adminService.deleteCompany(companyId);
 		} catch (AdminServiceException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -70,14 +70,28 @@ public class AdminController {
 	}
 
 	@GetMapping("/company/all")
-	public List<Company> getAllCompanies() {
+	public List<Company> getAllCompanies(@RequestHeader String token) {
+		return adminService.getAllCompanies();
+	}
+	
+	@GetMapping("/company/search/{company}")
+	public List<Company> searchAllCompanies(@PathVariable String company, @RequestHeader String token) {
+		try {
+			return adminService.getCompanyByNameOrEmail(company);
+		} catch (AdminServiceException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+		}
+	}
+	
+	@GetMapping("/company/search/")
+	public List<Company> searchAllCompanies(@RequestHeader String token) {
 		return adminService.getAllCompanies();
 	}
 	
 	@PostMapping("/customer/add")
-	public void addCustomer(@RequestBody Customer customer, @RequestHeader String token) {
+	public int addCustomer(@RequestBody Customer customer, @RequestHeader String token) {
 		try {
-			adminService.addCustomer(customer);
+			return adminService.addCustomer(customer);
 		} catch (AdminServiceException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
@@ -96,6 +110,15 @@ public class AdminController {
 	public List<Coupon> getCustomerCoupons(@PathVariable int customerId, @RequestHeader String token) {
 		try {
 			return adminService.getAllCustomerCoupons(adminService.getCustomer(customerId));
+		} catch (AdminServiceException e) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+		}
+	}
+	
+	@GetMapping("/customer/allcoupons")
+	public List<Coupon> getAllCoupons(@RequestHeader String token) {
+		try {
+			return adminService.getAllCoupons();
 		} catch (AdminServiceException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
@@ -126,6 +149,16 @@ public class AdminController {
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
+	}
+	
+	@GetMapping("/customer/search/{search}")
+	public List<Customer> searchforCustomers(@PathVariable String search, @RequestHeader String token){
+		return this.adminService.getCustomerSearch(search);
+	}
+	
+	@GetMapping("/customer/search/")
+	public List<Customer> searchforCustomersAll(@RequestHeader String token){
+		return this.adminService.getAllCustomer();
 	}
 	
 }
