@@ -16,4 +16,4 @@ Spring boot, MySql DB, Swagger, Lombok, JWT, maven
 2. run maven to get all dependencies from the pom.xml file
 4. make sure mySql DB is running on the right port and credentials are right. (config through application.properties)
 5. run application as Spring Boot Application
-6. the api is running, can check endpoints with swagger-ui at localhost:8008/swagger-ui.html
+6. the api is running, can check endpoints with swagger-ui at localhost:8080/swagger-ui.html
