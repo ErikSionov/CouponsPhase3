@@ -1,6 +1,6 @@
 # Coupons Project Phase 3
 this project is a dashboard backend for a coupons purchasing SPA.
-Made with Spring boot and angular. coupons can be purchased, modified, created or deleted from DB using API endpoints.
+Made with Spring boot and angular. API has CRUD functionality and more.
 
 ## Tech/framework used:
 Spring boot, MySql DB, Swagger, Lombok, JWT, maven
