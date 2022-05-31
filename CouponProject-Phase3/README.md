@@ -1,14 +1,19 @@
 # Coupons Project Phase 3
-this project is a dashboard backend for a coupons purchasing SPA
-second half of this project, the frontend is developed with Angular.
+this project is a dashboard backend for a coupons purchasing SPA.
+Made with Spring boot and angular. coupons can be purchased, modified, created or deleted from DB using API endpoints.
 
 ## Tech/framework used:
-Spring boot, MySql DB, Swagger, JWT, maven
+Spring boot, MySql DB, Swagger, Lombok, JWT, maven
 
-##backend
-1. Check application.properties to config all necessary base properties 
- -Admin access can be changed
- -Db access can be changed
-3. This project uses local MySql DB on port 3306
-4. All endpoints need generated Json web token to work
-5. 
+## Features
+1. DB is self deployed and created if schemas not present in DB using Hibernate/JPA
+3. Scheduled deletion of expired coupons daily at 00:00
+4. to access any API endpoint(excluding LoginManager) user must send with their request JWT authentication. Web filter prevent access to endpoints without token.
+5. Lombok used to prevent boilerplate bloat.
+
+## Installation
+1. import as a Maven project to Eclipse with spring tools or spring tools suite
+2. run maven to get all dependencies from the pom.xml file
+4. make sure mySql DB is running on the right port and credentials are right. (config through application.properties)
+5. run application as Spring Boot Application
+6. the api is running, can check endpoints with swagger-ui at localhost:8008/swagger-ui.html
